@@ -24,7 +24,7 @@ BOOL CreateProcessW(
 	LPCWSTR path           = L"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe";
 	STARTUPINFOW si        = { 0 };      // struct de inicialização
 	PROCESS_INFORMATION pi = { 0 };      // struct pra informações do processo
-	si.cb				           = sizeof(si); // tamanho da struct  
+	si.cb				   = sizeof(si); // tamanho da struct  
 
 	BOOL exec = CreateProcessW(
 		path,
