@@ -1,0 +1,52 @@
+#include <Windows.h>
+#include <NTSecAPI.h>
+#include <Sddl.h>
+#include <iostream>
+
+#pragma comment(lib, "Secur32.lib")
+
+using namespace std;
+
+int wmain() {
+
+    ULONG sessionCount = 0;
+    PLUID sessions     = nullptr;
+
+    if (LsaEnumerateLogonSessions(&sessionCount, &sessions) != 0) {
+        wcerr << L"[!] failed to enumerate logon sessions." << endl;
+        return 1;
+    }
+
+    cout << "[+] enumerating user sessions..." << endl;
+    wcout << L"---------------------------------------------------------------------" << endl;
+
+    for (ULONG i = 0; i < sessionCount; ++i) {
+        PSECURITY_LOGON_SESSION_DATA pSessionData = nullptr;
+        if (LsaGetLogonSessionData(&sessions[i], &pSessionData) == 0 && pSessionData) {
+            if (pSessionData->UserName.Buffer && pSessionData->LogonDomain.Buffer) {
+                wcout << L"[*] user: " << wstring(pSessionData->UserName.Buffer, pSessionData->UserName.Length / 2)
+                    << L"\\" << wstring(pSessionData->LogonDomain.Buffer, pSessionData->LogonDomain.Length / 2) << endl;
+
+                wcout << L"[*] auth package: " << wstring(pSessionData->AuthenticationPackage.Buffer,
+                    pSessionData->AuthenticationPackage.Length / 2) << endl;
+
+                wcout << L"[*] logon type: " << pSessionData->LogonType << endl;
+                wcout << L"[*] session id: " << pSessionData->Session << endl;
+
+                if (pSessionData->Sid) {
+                    LPWSTR sidStr;
+                    if (ConvertSidToStringSid(pSessionData->Sid, &sidStr)) {
+                        wcout << L"[*] ID: " << sidStr << endl;
+                        LocalFree(sidStr);
+                    }
+                }
+
+                wcout << L"---------------------------------------------------------------------" << endl;
+            }
+            LsaFreeReturnBuffer(pSessionData);
+        }
+    }
+
+    LsaFreeReturnBuffer(sessions);
+    return 0;
+}
